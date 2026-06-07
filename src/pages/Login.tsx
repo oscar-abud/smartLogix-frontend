@@ -24,7 +24,7 @@ export const Login = () => {
 
     try {
       const data = await fetchData('auth/login', 'POST', undefined, { email, password });
-      
+
       setAuth(
         { email: data.user.email, role: data.user.role }, 
         data.access_token
@@ -50,7 +50,7 @@ export const Login = () => {
           <div className="card shadow-sm border-0 p-4">
             <div className="card-body">
               <h3 className="card-title text-center mb-4 fw-bold text-primary">
-                SmartLogix Login
+                <span style={{color: 'black'}}>Smart-</span>logix Login
               </h3>
               
               <form onSubmit={handleSubmit}>

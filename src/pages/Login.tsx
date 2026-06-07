@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { fetchData } from "@/services/api/index";
 import { useAuthStore } from "@/store/useAuthStore";
+import { CONST_ENDPOINT_LOGIN } from "@/services/api/constants";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
-      const data = await fetchData("auth/login", "POST", undefined, {
+      const data = await fetchData(CONST_ENDPOINT_LOGIN, "POST", undefined, {
         email,
         password,
       });

@@ -1,64 +1,66 @@
 import axios, { AxiosError } from "axios";
-import { toast } from 'sonner';
+import { toast } from "sonner";
+import { BFF_URL } from "./constants";
 
 // export const API_URL: string | undefined = import.meta.env.VITE_API_URL;
-export const API_URL: string | undefined = 'http://localhost:3000/api';
+export const API_URL: string | undefined = BFF_URL;
 
 export const fetchData = async (
   endpoint: string,
   method: string,
   id?: string,
   body?: unknown,
-  haveToast: boolean = true
+  haveToast: boolean = true,
 ) => {
-  const storedToken = sessionStorage.getItem('token');
-  let headers: { [key: string]: string } = {}
+  const storedToken = sessionStorage.getItem("token");
+  let headers: { [key: string]: string } = {};
 
   if (!(body instanceof FormData)) {
-    headers['Content-Type'] = 'application/json';
+    headers["Content-Type"] = "application/json";
   }
 
-
   if (storedToken) {
-    const { token } = JSON.parse(storedToken)
-    headers = { ...headers, Authorization: `Bearer ${token}` }
+    const { token } = JSON.parse(storedToken);
+    headers = { ...headers, Authorization: `Bearer ${token}` };
   }
 
   try {
     const config: any = {
-      url: `${API_URL}/${endpoint}${id ? `/${id}` : ''}`,
+      url: `${API_URL}/${endpoint}${id ? `/${id}` : ""}`,
       method,
       headers,
-    }
+    };
 
     // Solo agregar data si no es DELETE y hay body
-    if (method.toUpperCase() !== 'DELETE' && body !== undefined) {
-      config.data = body instanceof FormData ? body : JSON.stringify(body)
+    if (method.toUpperCase() !== "DELETE" && body !== undefined) {
+      config.data = body instanceof FormData ? body : JSON.stringify(body);
     }
 
-    const { data } = await axios(config)
-    return data
+    const { data } = await axios(config);
+    return data;
   } catch (error) {
     console.error(error);
-    const axiosError = error as AxiosError<{ message?: string }>
+    const axiosError = error as AxiosError<{ message?: string }>;
     if (axiosError?.response?.status === 401) {
-      if (endpoint === 'login') {
-        toast.error(axiosError?.response?.data?.message ?? 'Usuario y/o contraseña inválida')
+      if (endpoint === "login") {
+        toast.error(
+          axiosError?.response?.data?.message ??
+            "Usuario y/o contraseña inválida",
+        );
       } else {
-        toast.error('Tu sesión ha caducado')
-        sessionStorage.clear()
+        toast.error("Tu sesión ha caducado");
+        sessionStorage.clear();
         setTimeout(() => {
-          location.reload()
-        }, 2000)
+          location.reload();
+        }, 2000);
       }
     } else {
       if (haveToast) {
         toast.error(
-          axiosError?.response?.data?.message ?? 'Error al obtener los datos'
-        )
+          axiosError?.response?.data?.message ?? "Error al obtener los datos",
+        );
       }
-      throw error
+      throw error;
     }
   }
-
-}
+};

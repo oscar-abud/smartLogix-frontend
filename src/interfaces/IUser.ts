@@ -3,7 +3,7 @@ export interface IUser {
   email: string;
   role: {
     id: number;
-    name: string; // <-- Así TypeScript sabrá que 'role' contiene un objeto con 'name'
+    name: string;
   };
   createdAt: string;
 }

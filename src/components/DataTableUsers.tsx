@@ -6,6 +6,7 @@ import { fetchData } from "@/services/api/index";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { IUser } from "@/interfaces/IUser";
 import { toast } from "sonner";
+import { CONST_ENDPOINT_USER } from "@/services/api/constants";
 
 export const DataTableUsers = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -17,7 +18,7 @@ export const DataTableUsers = () => {
   const loadUsers = async () => {
     try {
       setIsLoading(true);
-      const data = await fetchData("auth/user", "GET");
+      const data = await fetchData(CONST_ENDPOINT_USER, "GET");
       setUsers(data);
     } catch (error) {
       console.error("Error cargando usuarios:", error);

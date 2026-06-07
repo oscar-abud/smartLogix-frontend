@@ -3,9 +3,9 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Login } from '@/pages/Login';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
+import { Dashboard } from '@/pages/Dashboard';
 
 // Componentes temporales de prueba
-const DashboardPlaceholder = () => <div><h2>📊 Resumen Operativo</h2><p>Bienvenido al centro de control de SmartLogix.</p></div>;
 const InventoryPlaceholder = () => <div><h2>📦 Módulo de Inventario</h2><p>Aquí gestionarás los stocks de los almacenes A y B.</p></div>;
 const OrdersPlaceholder = () => <div><h2>🛒 Gestión de Órdenes</h2><p>Panel de administración de pedidos y despachos.</p></div>;
 
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '/dashboard',
-            element: <DashboardPlaceholder />,
+            element: <Dashboard />,
           },
           {
             path: '/inventory',

@@ -1,15 +1,11 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-interface User {
-  email: string;
-  role: string;
-}
+import type { IUser } from '@/interfaces/IUser';
 
 interface AuthState {
-  user: User | null;
+  user: IUser | null;
   token: string | null;
-  setAuth: (user: User, token: string) => void;
+  setAuth: (user: IUser, token: string) => void;
   clearAuth: () => void;
   isAuthed: () => boolean;
 }

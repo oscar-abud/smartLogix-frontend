@@ -35,25 +35,37 @@ export const DataTableUsers = () => {
   }, []);
 
   const handleOpenCreate = () => {
-    setSelectedUser(null); // Al ser null, el modal sabe que va a CREAR
+    setSelectedUser(null);
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (user: IUser) => {
-    setSelectedUser(user); // Al tener datos, el modal sabe que va a EDITAR
+    setSelectedUser(user);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
-      try {
-        await fetchData(`auth/users`, "DELETE", id);
-        toast.success("Usuario eliminado exitosamente");
-        loadUsers();
-      } catch (error) {
-        console.error("Error al eliminar:", error);
-      }
-    }
+  const handleDelete = (id: string, email: string) => {
+    // Disparamos un toast persistente con botones interactivos
+    toast.warning(`¿Estás seguro de eliminar a ${email}?`, {
+      description: "Esta acción no se puede deshacer.",
+      duration: Infinity, // No se cierra solo, obliga al usuario a elegir
+      action: {
+        label: "Sí, eliminar",
+        onClick: async () => {
+          try {
+            await fetchData(CONST_ENDPOINT_USER, "DELETE", id);
+            toast.success("Usuario eliminado exitosamente");
+            loadUsers(); // Recarga la tabla
+          } catch (error) {
+            console.error("Error al eliminar:", error);
+          }
+        },
+      },
+      cancel: {
+        label: "Cancelar",
+        onClick: () => toast.dismiss(), // Cierra el toast sin hacer nada
+      },
+    });
   };
 
   const columns: TableColumn<IUser>[] = [
@@ -95,7 +107,7 @@ export const DataTableUsers = () => {
 
         return (
           <div className="d-flex gap-2">
-            {/* Botón Editar Vinculado al Modal 🔥 */}
+            {/* Botón Editar Vinculado al Modal */}
             <button
               onClick={() => handleOpenEdit(row)}
               className="btn btn-sm btn-outline-primary"
@@ -104,7 +116,7 @@ export const DataTableUsers = () => {
             </button>
             {currentRoleName === "ADMIN" && (
               <button
-                onClick={() => handleDelete(row.id)}
+                onClick={() => handleDelete(row.id, row.email)}
                 className="btn btn-sm btn-outline-danger"
               >
                 🗑️
@@ -143,7 +155,7 @@ export const DataTableUsers = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
 
-          {/* Botón para disparar la creación de usuario 🔒 (Oculto para CLIENT) */}
+          {/* Botón para disparar la creación de usuario */}
           {currentUser?.role?.name !== "CLIENT" && (
             <button
               onClick={handleOpenCreate}
@@ -163,11 +175,11 @@ export const DataTableUsers = () => {
         highlightOnHover
       />
 
-      {/* 🔥 INYECTAMOS EL COMPONENTE MODAL AQUÍ */}
+      {/* INYECTAMOS EL COMPONENTE MODAL AQUÍ */}
       <ModalUser
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSuccess={loadUsers} // Si sale bien, ejecuta el GET para refrescar las filas
+        onSuccess={loadUsers}
         userToEdit={selectedUser}
       />
     </div>

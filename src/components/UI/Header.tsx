@@ -49,7 +49,7 @@ function Header() {
                   </li>
                   <li>
                     <span className="dropdown-item-text text-muted small px-3 py-2">
-                      Rol: <span className="badge bg-secondary-subtle text-secondary">{user?.role || 'USER'}</span>
+                      Rol: <span className="badge bg-secondary-subtle text-secondary">{user?.role.name || 'USER'}</span>
                     </span>
                   </li>
                   <li><hr className="dropdown-divider my-1" /></li>

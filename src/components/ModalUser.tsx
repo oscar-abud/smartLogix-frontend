@@ -6,12 +6,13 @@ import {
   CONST_ENDPOINT_REGISTER,
   CONST_ENDPOINT_USER,
 } from "@/services/api/constants";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface ModalUserProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  userToEdit: IUser | null; // Si es null -> CREAR. Si tiene datos -> EDITAR.
+  userToEdit: IUser | null;
 }
 
 export const ModalUser = ({
@@ -22,14 +23,17 @@ export const ModalUser = ({
 }: ModalUserProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [roleId, setRoleId] = useState("2"); // Valor por defecto (ej: OPERATOR o CLIENT)
+  const [roleId, setRoleId] = useState("2");
   const [isLoading, setIsLoading] = useState(false);
+
+  const authStore = useAuthStore();
 
   // Determinar dinámicamente si estamos editando o creando
   const isEditMode = !!userToEdit;
 
   // Cada vez que el modal se abre o cambia el usuario a editar, actualizamos los estados
   useEffect(() => {
+    console.log(authStore.user);
     if (userToEdit) {
       setEmail(userToEdit.email);
       setRoleId(userToEdit.role.id.toString());
@@ -59,7 +63,9 @@ export const ModalUser = ({
       // Estructuramos el cuerpo de la petición
       const body: any = {
         email,
-        roleId: Number(roleId),
+        role: {
+          id: Number(roleId),
+        },
       };
 
       // En modo creación la contraseña es obligatoria. En edición, solo si la quieren cambiar.
@@ -76,7 +82,7 @@ export const ModalUser = ({
 
       toast.success(
         isEditMode
-          ? "Usuario actualizado con éxito"
+          ? "Usuario actualizado, vuelva a iniciar sesión para ver cambios"
           : "Usuario creado con éxito",
       );
       onSuccess(); // Recarga la tabla de usuarios
@@ -169,7 +175,12 @@ export const ModalUser = ({
                     onChange={(e) => setRoleId(e.target.value)}
                     disabled={isLoading}
                   >
-                    <option value="1">ADMIN</option>
+                    {
+                      authStore.user?.role.id === 1 && (
+                        <option value="1">ADMIN</option>
+                      )
+                    }
+                    {/* <option value="1">ADMIN</option> */}
                     <option value="2">OPERATOR</option>
                     <option value="3">CLIENT</option>
                   </select>

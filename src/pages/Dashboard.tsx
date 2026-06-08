@@ -3,7 +3,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export const Dashboard = () => {
   const user = useAuthStore((state) => state.user);
-  const roleName = typeof user?.role === "object" ? user.role.name : user?.role;
 
   return (
     <div className="container-fluid p-0">
@@ -13,7 +12,7 @@ export const Dashboard = () => {
         <p className="text-secondary m-0 mt-1">
           Hola, <strong className="text-primary">{user?.email}</strong>. Estás
           operando con el perfil de:
-          <span className="badge bg-dark ms-2">{roleName || "USER"}</span>
+          <span className="badge bg-dark ms-2">{user?.role.name || "USER"}</span>
         </p>
       </div>
 

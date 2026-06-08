@@ -3,10 +3,10 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Login } from '@/pages/Login';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
-import { Dashboard } from '@/pages/Dashboard';
+import { DashboardPage } from '@/pages/DashboardPage';
+import { InventoryPage } from '@/pages/InventoryPage';
 
 // Componentes temporales de prueba
-const InventoryPlaceholder = () => <div><h2>📦 Módulo de Inventario</h2><p>Aquí gestionarás los stocks de los almacenes A y B.</p></div>;
 const OrdersPlaceholder = () => <div><h2>🛒 Gestión de Órdenes</h2><p>Panel de administración de pedidos y despachos.</p></div>;
 
 export const router = createBrowserRouter([
@@ -22,11 +22,11 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '/dashboard',
-            element: <Dashboard />,
+            element: <DashboardPage />,
           },
           {
             path: '/inventory',
-            element: <InventoryPlaceholder />,
+            element: <InventoryPage />,
           },
           {
             path: '/orders',

@@ -10,3 +10,8 @@ export const CONST_ENDPOINT_LOGIN = `${apiPrefix}/auth/login`;
 export const CONST_ENDPOINT_REGISTER = `${apiPrefix}/auth/register`;
 // ENDPOINT USUARIOS
 export const CONST_ENDPOINT_USER = `${apiPrefix}/auth/user`;
+/*
+ * INVENTORY
+ */
+// ENDPOINT INVENTARIOS
+export const CONST_ENDPOINT_INVENTORY = `${apiPrefix}/inventory`;

@@ -1,7 +1,7 @@
 import { DataTableUsers } from "@/components/DataTableUsers";
 import { useAuthStore } from "@/store/useAuthStore";
 
-export const Dashboard = () => {
+export const DashboardPage = () => {
   const user = useAuthStore((state) => state.user);
 
   return (

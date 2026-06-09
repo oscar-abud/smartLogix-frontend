@@ -7,6 +7,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { CONST_ENDPOINT_INVENTORY } from "@/services/api/constants";
 import { ModalAssignedUsers } from "./ModalAssignedUsers";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const DataTableInventory: React.FC = () => {
   const [inventories, setInventories] = useState<any[]>([]);
@@ -19,6 +20,8 @@ export const DataTableInventory: React.FC = () => {
 
   const currentUser = useAuthStore((state) => state.user);
   const currentRoleName = currentUser?.role?.name;
+
+  const navigate = useNavigate();
 
   const loadInventories = async () => {
     try {
@@ -134,11 +137,11 @@ export const DataTableInventory: React.FC = () => {
         }
         return (
           <div className="d-flex gap-2">
-            <button 
-              className="btn btn-sm btn-outline-primary fw-medium" 
-              onClick={() => toast.info(`Abriendo catálogo para: ${row.name}`)}
+            <button
+              onClick={() => navigate(`/inventory/${row.id}`)}
+              className="btn btn-sm btn-primary fw-semibold shadow-sm d-flex align-items-center gap-1"
             >
-              👁️ Stock
+              Ver Inventario
             </button>
             {currentRoleName === "ADMIN" && (
               <button

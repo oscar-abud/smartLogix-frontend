@@ -5,6 +5,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { InventoryPage } from '@/pages/InventoryPage';
+import { InventoryDetailPage } from '@/pages/InventoryDetailPage';
 
 // Componentes temporales de prueba
 const OrdersPlaceholder = () => <div><h2>🛒 Gestión de Órdenes</h2><p>Panel de administración de pedidos y despachos.</p></div>;
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
           {
             path: '/inventory',
             element: <InventoryPage />,
+          },
+          {
+            path: '/inventory/:id',
+            element: <InventoryDetailPage />,
           },
           {
             path: '/orders',

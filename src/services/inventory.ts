@@ -11,12 +11,20 @@ export const inventoryService = {
     return await fetchData(CONST_ENDPOINT_INVENTORY, "GET", id.toString(), undefined, true);
   },
 
+  getTypes: async (): Promise<any[]> => {
+    return await fetchData(`${CONST_ENDPOINT_INVENTORY}/types`, "GET", undefined, undefined, true);
+  },
+
   create: async (body: ICreateInventoryDto): Promise<IInventory> => {
     return await fetchData(CONST_ENDPOINT_INVENTORY, "POST", undefined, body, true);
   },
 
   createType: async (body: { name: string; description?: string }): Promise<any> => {
     return await fetchData(`${CONST_ENDPOINT_INVENTORY}/types`, "POST", undefined, body, true);
+  },
+
+  createItem: async (inventoryId: number, body: { sku: string; name: string; price: number; stockAvailable: number; inventoryTypeId: number }): Promise<any> => {
+    return await fetchData(`${CONST_ENDPOINT_INVENTORY}/${inventoryId}/items`, "POST", undefined, body, true);
   },
 
   delete: async (id: number): Promise<{ message: string; id: number }> => {

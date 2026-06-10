@@ -3,11 +3,13 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { DataTableInventory } from "@/components/DataTableInventory";
 import { ModalInventory } from "@/components/ModalInventory";
 import { ModalInventoryType } from "@/components/ModalInventoryType";
+import { ModalInventoryItem } from "@/components/ModalInventoryItem";
 
 export const InventoryPage: React.FC = () => {
   const currentUser = useAuthStore((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isTypeModalOpen, setIsTypeModalOpen] = useState(false); // 🔥 NUEVO ESTADO
+  const [isTypeModalOpen, setIsTypeModalOpen] = useState(false);
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Extraemos de forma segura el rol del usuario conectado
@@ -32,6 +34,14 @@ export const InventoryPage: React.FC = () => {
         {/* REGLA DE NEGOCIO: El Cliente no puede ver los botones de administración */}
         {currentRoleName !== "CLIENT" && (
           <div className="d-flex gap-2">
+
+            {/* Crear Producto Global */}
+            <button
+              onClick={() => setIsItemModalOpen(true)}
+              className="btn btn-outline-success fw-semibold d-flex align-items-center gap-1 shadow-sm"
+            >
+              📦 Agregar Producto
+            </button>
             
             {/* Crear Tipo de Inventario Global */}
             <button
@@ -72,10 +82,17 @@ export const InventoryPage: React.FC = () => {
         onSuccess={handleSuccessCreate}
       />
 
-      {/* NUEVO MODAL: Registro de Tipos de Almacén Global */}
+      {/* Registro de Tipos de Almacén Global */}
       <ModalInventoryType
         isOpen={isTypeModalOpen}
         onClose={() => setIsTypeModalOpen(false)}
+      />
+
+      {/* Registro de Productos con mapeo de selects */}
+      <ModalInventoryItem
+        isOpen={isItemModalOpen}
+        onClose={() => setIsItemModalOpen(false)}
+        onSuccess={handleSuccessCreate}
       />
     </div>
   );

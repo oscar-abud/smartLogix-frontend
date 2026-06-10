@@ -15,7 +15,15 @@ export const inventoryService = {
     return await fetchData(CONST_ENDPOINT_INVENTORY, "POST", undefined, body, true);
   },
 
+  createType: async (body: { name: string; description?: string }): Promise<any> => {
+    return await fetchData(`${CONST_ENDPOINT_INVENTORY}/types`, "POST", undefined, body, true);
+  },
+
   delete: async (id: number): Promise<{ message: string; id: number }> => {
     return await fetchData(CONST_ENDPOINT_INVENTORY, "DELETE", id.toString(), undefined, true);
+  },
+
+  updateStock: async (itemId: number, quantity: number): Promise<any> => {
+    return await fetchData(`${CONST_ENDPOINT_INVENTORY}/items/${itemId}/stock`, "PATCH", undefined, { quantity }, true);
   }
 };

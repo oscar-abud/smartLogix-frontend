@@ -1,9 +1,9 @@
-// src/pages/InventoryDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import type { TableColumn } from "react-data-table-component";
 import { fetchData } from "@/services/api";
+import { inventoryService } from "@/services/inventory";
 import { toast } from "sonner";
 import type { IItem, IInventoryDetail } from "@/interfaces/IInventory";
 import { CONST_ENDPOINT_INVENTORY } from "@/services/api/constants";
@@ -16,24 +16,75 @@ export const InventoryDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchItem, setSearchItem] = useState<string>("");
 
-  useEffect(() => {
-    const getInventoryDetail = async () => {
-      try {
-        setLoading(true);
-        // Consumimos tu endpoint GET http://localhost:3000/api/inventory/:id
-        const response = await fetchData(`${CONST_ENDPOINT_INVENTORY}/${id}`, "GET");
-        setInventory(response);
-      } catch (error) {
-        console.error("Error cargando el detalle del almacén:", error);
-        toast.error("No se pudo obtener la información de este almacén.");
-        navigate("/inventory"); // Redirección de seguridad si falla o no existe
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Estados para controlar el modal de ajuste de stock
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<IItem | null>(null);
+  const [stockQuantity, setStockQuantity] = useState<string>(""); 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const getInventoryDetail = async () => {
+    try {
+      if (!id) return;
+      const response = await fetchData(`${CONST_ENDPOINT_INVENTORY}/${id}`, "GET");
+      setInventory(response);
+    } catch (error) {
+      console.error("Error cargando el detalle del almacén:", error);
+      toast.error("No se pudo obtener la información de este almacén.");
+      navigate("/inventory");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (id) getInventoryDetail();
   }, [id, navigate]);
+
+  // Abrir el modal guardando la referencia del ítem de la fila
+  const openStockModal = (item: IItem) => {
+    setSelectedItem(item);
+    setStockQuantity(""); // Iniciamos vacío para obligar a escribir
+    setIsModalOpen(true);
+  };
+
+  // Cerrar modal y limpiar
+  const closeStockModal = () => {
+    setIsModalOpen(false);
+    setSelectedItem(null);
+    setStockQuantity("");
+  };
+
+  // Enviar formulario del modal al BFF
+  const handleStockSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedItem) return;
+
+    const quantityNumber = parseInt(stockQuantity, 10);
+
+    // 1. Validaciones preventivas de entrada en el Front
+    if (isNaN(quantityNumber) || quantityNumber === 0) {
+      return toast.error("Por favor, ingresa una cantidad numérica entera distinta de cero.");
+    }
+
+    // 2. Si es una resta, validar que no resulte en stock negativo
+    if (quantityNumber < 0 && (selectedItem.stockAvailable + quantityNumber) < 0) {
+      return toast.error(`Operación inválida. No puedes quitar más unidades de las disponibles (${selectedItem.stockAvailable}).`);
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await inventoryService.updateStock(selectedItem.id, quantityNumber);
+      toast.success(response.message || "Stock actualizado exitosamente.");
+      
+      closeStockModal();
+      getInventoryDetail();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Error al actualizar el stock.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -47,7 +98,6 @@ export const InventoryDetailPage: React.FC = () => {
 
   if (!inventory) return null;
 
-  // Formateador de dinero (Ej: CLP)
   const formatPrice = (priceStr: string) => {
     return new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP" })
       .format(parseFloat(priceStr));
@@ -81,12 +131,22 @@ export const InventoryDetailPage: React.FC = () => {
       name: "Stock Disponible",
       selector: (row) => row.stockAvailable,
       sortable: true,
-      width: "150px",
+      width: "210px",
       center: true,
       cell: (row) => (
-        <span className={`badge ${row.stockAvailable > 10 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger"} fw-bold fs-6`}>
-          {row.stockAvailable} uds
-        </span>
+        <div className="d-flex align-items-center gap-2">
+          <span className={`badge ${row.stockAvailable > 10 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger"} fw-bold fs-6 px-2 py-1`}>
+            {row.stockAvailable} uds
+          </span>
+          <button
+            onClick={() => openStockModal(row)}
+            className="btn btn-xs btn-outline-primary py-0 px-2 small fw-semibold border border-light-subtle shadow-sm"
+            style={{ fontSize: "12px", height: "24px" }}
+            title="Ajustar stock de este artículo"
+          >
+            ⚙️ Ajustar
+          </button>
+        </div>
       )
     }
   ];
@@ -122,7 +182,6 @@ export const InventoryDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Métrica rápidas superiores */}
         <div className="row g-3">
           <div className="col-6 col-md-3">
             <div className="p-3 bg-light rounded-3 border border-light-subtle">
@@ -140,7 +199,7 @@ export const InventoryDetailPage: React.FC = () => {
       </div>
 
       <div className="row g-4">
-        {/* Sección Izquierda: Catálogo de Productos */}
+        {/* Tabla de Artículos */}
         <div className="col-12 col-xl-8">
           <div className="card shadow-sm border-light-subtle bg-white rounded-3 p-4">
             <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 gap-2">
@@ -170,11 +229,10 @@ export const InventoryDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Sección Derecha: Personal Autorizado */}
+        {/* Personal con Acceso */}
         <div className="col-12 col-xl-4">
           <div className="card shadow-sm border-light-subtle bg-white rounded-3 p-4">
             <h5 className="fw-bold mb-3 text-dark">👥 Personal con Acceso</h5>
-            
             {inventory.users && inventory.users.length > 0 ? (
               <div className="d-flex flex-column gap-2" style={{ maxHeight: "350px", overflowY: "auto" }}>
                 {inventory.users.map((user) => (
@@ -195,6 +253,56 @@ export const InventoryDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* ========================================================================= */}
+      {/* MODAL COMPACTO: AJUSTE DE STOCK ATÓMICO                      */}
+      {/* ========================================================================= */}
+      {isModalOpen && selectedItem && (
+        <div className="modal d-block bg-dark bg-opacity-50" tabIndex={-1}>
+          <div className="modal-dialog modal-dialog-centered modal-sm" style={{ maxWidth: "380px" }}>
+            <div className="modal-content border-0 shadow rounded-3">
+              <div className="modal-header bg-light border-bottom-0 py-2 px-3">
+                <h6 className="modal-title fw-bold text-dark m-0">⚙️ Ajustar Stock Física</h6>
+                <button type="button" className="btn-close" style={{ fontSize: "12px" }} onClick={closeStockModal} disabled={isSubmitting}></button>
+              </div>
+              <form onSubmit={handleStockSubmit}>
+                <div className="modal-body px-3 py-3">
+                  <div className="mb-2 bg-light-subtle p-2 rounded border border-light-subtle">
+                    <small className="text-muted d-block font-monospace uppercase fw-bold" style={{ fontSize: "10px" }}>SKU: {selectedItem.sku}</small>
+                    <span className="d-block text-dark fw-semibold text-truncate small">{selectedItem.name}</span>
+                    <small className="text-muted d-block mt-1">Stock Actual: <strong>{selectedItem.stockAvailable} uds</strong></small>
+                  </div>
+
+                  <div className="mb-3 mt-3">
+                    <label className="form-label small fw-bold text-dark mb-1">Cantidad a sumar/restar:</label>
+                    <input
+                      type="number"
+                      step="1" // Fuerza a que el navegador maneje saltos de números enteros
+                      className="form-control form-control-sm text-center fw-bold fs-5"
+                      placeholder="Ej: 15 o -5"
+                      value={stockQuantity}
+                      onChange={(e) => setStockQuantity(e.target.value)}
+                      disabled={isSubmitting}
+                      required
+                    />
+                    <div className="form-text text-muted" style={{ fontSize: "11px" }}>
+                      Coloca valores <strong>positivos</strong> para ingresar mercadería y valores <strong>negativos (-)</strong> para mermas o despachos.
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer border-top-0 py-2 px-3 bg-light gap-2">
+                  <button type="button" className="btn btn-sm btn-outline-secondary px-3" onClick={closeStockModal} disabled={isSubmitting}>
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn btn-sm btn-primary px-3 fw-semibold" disabled={isSubmitting}>
+                    {isSubmitting ? "Guardando..." : "Aplicar"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

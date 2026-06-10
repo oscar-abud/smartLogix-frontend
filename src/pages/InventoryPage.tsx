@@ -1,12 +1,13 @@
-// src/pages/InventoryPage.tsx
 import React, { useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { DataTableInventory } from "@/components/DataTableInventory";
 import { ModalInventory } from "@/components/ModalInventory";
+import { ModalInventoryType } from "@/components/ModalInventoryType";
 
 export const InventoryPage: React.FC = () => {
   const currentUser = useAuthStore((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTypeModalOpen, setIsTypeModalOpen] = useState(false); // 🔥 NUEVO ESTADO
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Extraemos de forma segura el rol del usuario conectado
@@ -28,14 +29,25 @@ export const InventoryPage: React.FC = () => {
           </p>
         </div>
 
-        {/* REGLA DE NEGOCIO: El Cliente no puede ver el botón de agregar almacenes */}
+        {/* REGLA DE NEGOCIO: El Cliente no puede ver los botones de administración */}
         {currentRoleName !== "CLIENT" && (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="btn btn-primary fw-semibold d-flex align-items-center gap-1 shadow-sm"
-          >
-            ➕ {currentRoleName === "OPERATOR" ? "Crear y Autoasignarme Almacén" : "Agregar Almacén"}
-          </button>
+          <div className="d-flex gap-2">
+            
+            {/* Crear Tipo de Inventario Global */}
+            <button
+              onClick={() => setIsTypeModalOpen(true)}
+              className="btn btn-outline-primary fw-semibold d-flex align-items-center gap-1 shadow-sm"
+            >
+              🏷️ Crear Categoría
+            </button>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="btn btn-primary fw-semibold d-flex align-items-center gap-1 shadow-sm"
+            >
+              ➕ {currentRoleName === "OPERATOR" ? "Crear y Autoasignarme Almacén" : "Agregar Almacén"}
+            </button>
+          </div>
         )}
       </div>
 
@@ -48,17 +60,22 @@ export const InventoryPage: React.FC = () => {
         </div>
       )}
 
-      {/* 3. Contenedor Card blanco que aloja la nueva tabla de datos */}
+      {/* Contenedor Card blanco que aloja la tabla de datos */}
       <div className="card shadow-sm p-4 border-light-subtle bg-white rounded-3">
-        {/* Usamos el refreshKey para forzar el re-renderizado limpio de la tabla tras un POST exitoso */}
         <DataTableInventory key={refreshKey} />
       </div>
 
-      {/* 4. Modal para la creación de nuevos espacios físicos */}
+      {/* Modal para la creación de nuevos espacios físicos */}
       <ModalInventory
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleSuccessCreate}
+      />
+
+      {/* NUEVO MODAL: Registro de Tipos de Almacén Global */}
+      <ModalInventoryType
+        isOpen={isTypeModalOpen}
+        onClose={() => setIsTypeModalOpen(false)}
       />
     </div>
   );

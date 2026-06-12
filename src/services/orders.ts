@@ -1,0 +1,26 @@
+import { fetchData } from "./api";
+import { CONST_ENDPOINT_ORDERS } from "./api/constants";
+import type { Order } from "@/interfaces/IOrders";
+
+export const ordersService = {
+  /**
+   * Obtiene el listado completo de órdenes registradas en el sistema
+   */
+  getAll: async (): Promise<Order[]> => {
+    return await fetchData(CONST_ENDPOINT_ORDERS, "GET", undefined, undefined, true);
+  },
+
+  /**
+   * Obtiene el detalle completo y artículos de una orden específica mediante su ID
+   */
+  getById: async (id: number): Promise<Order> => {
+    return await fetchData(CONST_ENDPOINT_ORDERS, "GET", id.toString(), undefined, true);
+  },
+
+  /**
+   * Elimina de forma física o lógica una orden del sistema mediante su ID
+   */
+  delete: async (id: number): Promise<any> => {
+    return await fetchData(CONST_ENDPOINT_ORDERS, "DELETE", id.toString(), undefined, true);
+  }
+};

@@ -1,4 +1,3 @@
-// src/router/index.tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Login } from '@/pages/Login';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
@@ -6,9 +5,8 @@ import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { InventoryPage } from '@/pages/InventoryPage';
 import { InventoryDetailPage } from '@/pages/InventoryDetailPage';
-
-// Componentes temporales de prueba
-const OrdersPlaceholder = () => <div><h2>🛒 Gestión de Órdenes</h2><p>Panel de administración de pedidos y despachos.</p></div>;
+import { OrdersPage } from '@/pages/OrdersPage';
+import { OrderDetailPage } from '@/pages/OrderDetailPage';
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +33,11 @@ export const router = createBrowserRouter([
           },
           {
             path: '/orders',
-            element: <OrdersPlaceholder />,
+            element: <OrdersPage />,
+          },
+          {
+            path: '/orders/:id',
+            element: <OrderDetailPage />,
           },
         ],
       },

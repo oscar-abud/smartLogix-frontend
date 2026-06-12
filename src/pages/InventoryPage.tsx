@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
-import { DataTableInventory } from "@/components/DataTableInventory";
-import { ModalInventory } from "@/components/ModalInventory";
-import { ModalInventoryType } from "@/components/ModalInventoryType";
-import { ModalInventoryItem } from "@/components/ModalInventoryItem";
+import { DataTableInventory } from "@/components/inventory/DataTableInventory";
+import { ModalInventory } from "@/components/inventory/ModalInventory";
+import { ModalInventoryType } from "@/components/inventory/ModalInventoryType";
+import { ModalInventoryItem } from "@/components/inventory/ModalInventoryItem";
 
 export const InventoryPage: React.FC = () => {
   const currentUser = useAuthStore((state) => state.user);

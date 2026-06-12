@@ -2,14 +2,7 @@ import React, { useEffect, useState } from "react";
 import { inventoryService } from "@/services/inventory";
 import { ordersService } from "@/services/orders";
 import { toast } from "sonner";
-
-interface InventoryItem {
-  id: number;
-  sku: string;
-  name: string;
-  price: string;
-  stockAvailable: number;
-}
+import type { IInventoryItem } from "@/interfaces/IInventory";
 
 interface CreateOrderModalProps {
   onClose: () => void;
@@ -22,7 +15,7 @@ interface CartItem {
 }
 
 export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({ onClose, onOrderCreated }) => {
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
+  const [inventory, setInventory] = useState<IInventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 

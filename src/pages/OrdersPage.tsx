@@ -4,17 +4,23 @@ import type { Order, OrderStatus } from "@/interfaces/IOrders";
 import { toast } from "sonner";
 import { ordersService } from "@/services/orders";
 import { renderStatusBadge } from "@/helpers/orderHelper";
-import { UpdateStatusModal } from "@/components/UpdateStatusModal";
-import { CreateOrderModal } from "@/components/CreateOrderModal";
+import { UpdateStatusModal } from "@/components/orders/UpdateStatusModal";
+import { CreateOrderModal } from "@/components/orders/CreateOrderModal";
+import { CreateShippingModal } from "@/components/shipping/CreateShippingModal";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeOrderForStatus, setActiveOrderForStatus] = useState<Order | null>(null);
+  const [activeOrderForShipping, setActiveOrderForShipping] = useState<Order | null>(null);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const authStore = useAuthStore();
+
+  function isNotProcessed(order: Order) {
+    return order.status !== 'PROCESSED'
+  }
 
   // Obtener todas las órdenes
   async function getOrders() {
@@ -132,11 +138,21 @@ export const OrdersPage = () => {
                           className="btn btn-outline-dark btn-sm fw-medium"
                           onClick={() => navigate(`/orders/${order.id}`)}
                         >
-                         Ver Órden
+                          Ver Órden
                         </button>
                         <button className="btn btn-outline-primary btn-sm fw-medium" onClick={() => setActiveOrderForStatus(order)}>
                           Actualizar Estado
                         </button>
+                        
+                        {/* Modal de Envío */}
+                        <button
+                          className="btn btn-warning btn-sm fw-medium"
+                          onClick={() => setActiveOrderForShipping(order)}
+                          disabled={isNotProcessed(order)}
+                        >
+                          ✈ Hacer Envío
+                        </button>
+
                         <button
                           className="btn btn-outline-danger btn-sm"
                           onClick={() => handleDeleteOrder(order.id)}
@@ -168,6 +184,15 @@ export const OrdersPage = () => {
         onClose={() => setShowCreateModal(false)}
         onOrderCreated={getOrders}
       />
+      )}
+
+      {/* MODAL DE ENVÍO */}
+      {activeOrderForShipping && (
+        <CreateShippingModal
+          order={activeOrderForShipping}
+          onClose={() => setActiveOrderForShipping(null)}
+          onShippingCreated={getOrders}
+        />
       )}
     </div>
   );

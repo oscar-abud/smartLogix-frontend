@@ -5,7 +5,7 @@ import type { TableColumn } from "react-data-table-component";
 import { fetchData } from "@/services/api/index";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CONST_ENDPOINT_INVENTORY } from "@/services/api/constants";
-import { ModalAssignedUsers } from "./ModalAssignedUsers";
+import { ModalAssignedUsers } from "@/components/users/ModalAssignedUsers";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 

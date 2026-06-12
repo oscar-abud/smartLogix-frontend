@@ -43,3 +43,11 @@ export interface ICreateInventoryDto {
   name: string;
   description?: string;
 }
+
+export interface IInventoryItem {
+  id: number;
+  sku: string;
+  name: string;
+  price: string;
+  stockAvailable: number;
+}

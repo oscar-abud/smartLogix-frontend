@@ -1,4 +1,4 @@
-import { DataTableUsers } from "@/components/DataTableUsers";
+import { DataTableUsers } from "@/components/users/DataTableUsers";
 import type { Order } from "@/interfaces/IOrders";
 import { fetchData } from "@/services/api";
 import { CONST_ENDPOINT_ORDERS } from "@/services/api/constants";

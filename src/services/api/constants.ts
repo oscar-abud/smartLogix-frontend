@@ -20,3 +20,8 @@ export const CONST_ENDPOINT_INVENTORY = `${apiPrefix}/inventory`;
  */
 // ENDPOINT ORDENES
 export const CONST_ENDPOINT_ORDERS = `${apiPrefix}/orders`;
+/*
+ * SHIPPING
+ */
+// ENDPOINT ENVIOS
+export const CONST_ENDPOINT_SHIPPING = `${apiPrefix}/shipping`;

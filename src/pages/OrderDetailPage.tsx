@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ordersService } from "@/services/orders";
 import { renderStatusBadge } from "@/helpers/orderHelper";
-import { UpdateStatusModal } from "@/components/UpdateStatusModal";
+import { UpdateStatusModal } from "@/components/orders/UpdateStatusModal";
 import type { Order, OrderStatus } from "@/interfaces/IOrders";
 import { toast } from "sonner";
 

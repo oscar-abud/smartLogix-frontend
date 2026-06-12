@@ -6,6 +6,7 @@ import { ordersService } from "@/services/orders";
 import { renderStatusBadge } from "@/helpers/orderHelper";
 import { UpdateStatusModal } from "@/components/UpdateStatusModal";
 import { CreateOrderModal } from "@/components/CreateOrderModal";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -13,6 +14,7 @@ export const OrdersPage = () => {
   const [activeOrderForStatus, setActiveOrderForStatus] = useState<Order | null>(null);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const navigate = useNavigate();
+  const authStore = useAuthStore();
 
   // Obtener todas las órdenes
   async function getOrders() {
@@ -73,9 +75,13 @@ export const OrdersPage = () => {
           <p className="text-muted m-0 mt-1">Panel de administración de pedidos y despachos comerciales.</p>
         </div>
         <div className="d-flex gap-2">
-          <button className="btn btn-success btn-sm fw-medium" onClick={() => setShowCreateModal(true)}>
-            ➕ Crear Orden
-          </button>
+          {
+            authStore.user?.role.name !== "CLIENT" && (
+              <button className="btn btn-success btn-sm fw-medium" onClick={() => setShowCreateModal(true)}>
+                ➕ Crear Orden
+              </button>
+            )
+          }
           <button className="btn btn-outline-primary btn-sm" onClick={getOrders}>
             🔄 Sincronizar
           </button>

@@ -1,8 +1,26 @@
 import { DataTableUsers } from "@/components/DataTableUsers";
+import type { Order } from "@/interfaces/IOrders";
+import { fetchData } from "@/services/api";
+import { CONST_ENDPOINT_ORDERS } from "@/services/api/constants";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, useState } from "react";
 
 export const DashboardPage = () => {
   const user = useAuthStore((state) => state.user);
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  async function getOrders() {
+    try {
+      const response = await fetchData(CONST_ENDPOINT_ORDERS, "GET")
+      setOrders(response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    getOrders()
+  }, [])
 
   return (
     <div className="container-fluid p-0">
@@ -30,7 +48,7 @@ export const DashboardPage = () => {
             <h6 className="text-uppercase text-muted small fw-bold">
               Órdenes Pendientes
             </h6>
-            <h3 className="m-0 fw-bold text-warning">12 Pedidos</h3>
+            <h3 className="m-0 fw-bold text-warning">{orders.filter(order => order.status === 'PENDING').length} Pedidos</h3>
           </div>
         </div>
       </div>

@@ -15,3 +15,8 @@ export const CONST_ENDPOINT_USER = `${apiPrefix}/auth/user`;
  */
 // ENDPOINT INVENTARIOS
 export const CONST_ENDPOINT_INVENTORY = `${apiPrefix}/inventory`;
+/*
+ * ORDERS
+ */
+// ENDPOINT ORDENES
+export const CONST_ENDPOINT_ORDERS = `${apiPrefix}/orders`;

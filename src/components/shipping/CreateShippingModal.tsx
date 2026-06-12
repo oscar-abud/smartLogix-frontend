@@ -24,7 +24,8 @@ export const CreateShippingModal: React.FC<CreateShippingModalProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, name: value }));
+    // Usamos [name] con corchetes para evaluar dinámicamente la propiedad del input
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

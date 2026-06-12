@@ -7,6 +7,7 @@ import { InventoryPage } from '@/pages/InventoryPage';
 import { InventoryDetailPage } from '@/pages/InventoryDetailPage';
 import { OrdersPage } from '@/pages/OrdersPage';
 import { OrderDetailPage } from '@/pages/OrderDetailPage';
+import { ShippingPage } from '@/pages/ShippingPage';
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
           {
             path: '/orders/:id',
             element: <OrderDetailPage />,
+          },
+          {
+            path: '/shipping',
+            element: <ShippingPage />,
           },
         ],
       },

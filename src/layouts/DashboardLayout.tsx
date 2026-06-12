@@ -26,6 +26,9 @@ export const DashboardLayout = () => {
           <Link to="/orders" className={`nav-link border-0 ${isActive('/orders')}`}>
             🛒 Órdenes de Compra
           </Link>
+          <Link to="/shipping" className={`nav-link border-0 ${isActive('/shipping')}`}>
+            ✈ Envios de Órdenes
+          </Link>
         </div>
         
         <div className="p-3 border-top bg-light text-center">

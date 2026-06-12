@@ -11,6 +11,11 @@ export const inventoryService = {
     return await fetchData(CONST_ENDPOINT_INVENTORY, "GET", id.toString(), undefined, true);
   },
 
+  getItems: async (): Promise<any[]> => {
+    // Consumimos el endpoint que retorna todos los ítems de inventario
+    return await fetchData(`${CONST_ENDPOINT_INVENTORY}/items`, "GET", undefined, undefined, true);
+  },
+
   getTypes: async (): Promise<any[]> => {
     return await fetchData(`${CONST_ENDPOINT_INVENTORY}/types`, "GET", undefined, undefined, true);
   },

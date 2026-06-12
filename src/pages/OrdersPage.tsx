@@ -5,11 +5,13 @@ import { toast } from "sonner";
 import { ordersService } from "@/services/orders";
 import { renderStatusBadge } from "@/helpers/orderHelper";
 import { UpdateStatusModal } from "@/components/UpdateStatusModal";
+import { CreateOrderModal } from "@/components/CreateOrderModal";
 
 export const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeOrderForStatus, setActiveOrderForStatus] = useState<Order | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // Obtener todas las órdenes
@@ -65,14 +67,19 @@ export const OrdersPage = () => {
   return (
     <div className="container-fluid p-4">
       {/* Encabezado */}
-      <div className="d-flex justify-between align-items-center mb-4 bg-white p-3 rounded border shadow-sm">
+      <div className="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded border shadow-sm">
         <div>
           <h2 className="fw-bold text-dark m-0">🛒 Gestión de Órdenes</h2>
           <p className="text-muted m-0 mt-1">Panel de administración de pedidos y despachos comerciales.</p>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={getOrders}>
-          🔄 Sincronizar
-        </button>
+        <div className="d-flex gap-2">
+          <button className="btn btn-success btn-sm fw-medium" onClick={() => setShowCreateModal(true)}>
+            ➕ Crear Orden
+          </button>
+          <button className="btn btn-outline-primary btn-sm" onClick={getOrders}>
+            🔄 Sincronizar
+          </button>
+        </div>
       </div>
 
       {/* Tabla con Estilos Bootstrap */}
@@ -147,6 +154,14 @@ export const OrdersPage = () => {
           onClose={() => setActiveOrderForStatus(null)}
           onStatusUpdated={handleStatusUpdatedInTable}
         />
+      )}
+
+      {/* MODAL DE CREAR ORDEN */}
+      {showCreateModal && (
+      <CreateOrderModal
+        onClose={() => setShowCreateModal(false)}
+        onOrderCreated={getOrders}
+      />
       )}
     </div>
   );

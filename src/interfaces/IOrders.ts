@@ -26,3 +26,10 @@ export interface Order {
   createdAt: string;      // Formato ISO string ("2026-06-11T02:14:45.562Z")
   items: OrderItem[];     // Arreglo de sub-ítems
 }
+
+export interface CreateOrderPayload {
+  items: {
+    productId: number;
+    quantity: number;
+  }[];
+}

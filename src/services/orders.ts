@@ -18,6 +18,19 @@ export const ordersService = {
   },
 
   /**
+   * Actualizar el estado de una orden
+   */
+  updateStatus: async (id: number, status: 'PENDING' | 'PROCESSED' | 'CANCELLED'): Promise<any> => {
+    return await fetchData(
+        `${CONST_ENDPOINT_ORDERS}/${id}/status`, 
+        "PATCH", 
+        undefined, 
+        { status },
+        true
+      );
+    },
+
+  /**
    * Elimina de forma física o lógica una orden del sistema mediante su ID
    */
   delete: async (id: number): Promise<any> => {

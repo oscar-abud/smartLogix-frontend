@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Order } from "@/interfaces/IOrders";
+import type { Order, OrderStatus } from "@/interfaces/IOrders";
 import { toast } from "sonner";
 import { ordersService } from "@/services/orders";
 import { renderStatusBadge } from "@/helpers/orderHelper";
+import { UpdateStatusModal } from "@/components/UpdateStatusModal";
 
 export const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeOrderForStatus, setActiveOrderForStatus] = useState<Order | null>(null);
   const navigate = useNavigate();
 
   // Obtener todas las órdenes
@@ -22,6 +24,12 @@ export const OrdersPage = () => {
       setLoading(false);
     }
   }
+
+  const handleStatusUpdatedInTable = (orderId: number, newStatus: OrderStatus) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+    );
+  };
 
   // Eliminar una orden por ID
   async function handleDeleteOrder(id: number) {
@@ -111,13 +119,16 @@ export const OrdersPage = () => {
                           className="btn btn-outline-dark btn-sm fw-medium"
                           onClick={() => navigate(`/orders/${order.id}`)}
                         >
-                          Ver Detalles
+                         Ver Órden
+                        </button>
+                        <button className="btn btn-outline-primary btn-sm fw-medium" onClick={() => setActiveOrderForStatus(order)}>
+                          Actualizar Estado
                         </button>
                         <button
                           className="btn btn-outline-danger btn-sm"
                           onClick={() => handleDeleteOrder(order.id)}
                         >
-                          🗑️ Eliminar
+                          🗑
                         </button>
                       </div>
                     </td>
@@ -128,6 +139,15 @@ export const OrdersPage = () => {
           </div>
         )}
       </div>
+
+      {/* MODAL ACTUALIZAR ESTADO */}
+      {activeOrderForStatus && (
+        <UpdateStatusModal
+          order={activeOrderForStatus}
+          onClose={() => setActiveOrderForStatus(null)}
+          onStatusUpdated={handleStatusUpdatedInTable}
+        />
+      )}
     </div>
   );
 };

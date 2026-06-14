@@ -149,6 +149,7 @@ export const OrdersPage = () => {
                           className="btn btn-warning btn-sm fw-medium"
                           onClick={() => setActiveOrderForShipping(order)}
                           disabled={isNotProcessed(order)}
+                          title={isNotProcessed(order) ? "Solo se pueden crear envíos para órdenes procesadas" : "Crear envío para esta orden"}
                         >
                           ✈ Hacer Envío
                         </button>

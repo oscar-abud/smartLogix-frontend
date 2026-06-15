@@ -4,10 +4,12 @@ import { toast } from "sonner";
 import { fetchData } from "@/services/api/index";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CONST_ENDPOINT_LOGIN } from "@/services/api/constants";
+import Logo from '@/assets/smart-logix.svg'
 
 export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Para efectos practicos, se dejara en los estados listos para entrar al sistema
+  const [email, setEmail] = useState("oscar@smartlogix.com");
+  const [password, setPassword] = useState("123456");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -51,7 +53,8 @@ export const Login = () => {
           <div className="card shadow-sm border-0 p-4">
             <div className="card-body">
               <h3 className="card-title text-center mb-4 fw-bold text-primary">
-                <span style={{ color: "black" }}>Smart-</span>logix Login
+                {/* <span style={{ color: "black" }}>Smart-</span>logix Login */}
+                <img src={Logo} alt="Logo de smart-logix" />
               </h3>
 
               <form onSubmit={handleSubmit}>

@@ -2,7 +2,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Header from "@/components/UI/Header";
 import { useAuthStore } from "@/store/useAuthStore";
 import { BrowserRouter } from "react-router-dom";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+vi.mock("sonner", () => ({
+  toast: { success: vi.fn() },
+}));
 
 // Mocks necesarios para aislar elementos externos del Header
 vi.mock("@/store/useAuthStore", () => ({
@@ -19,8 +23,11 @@ vi.mock("react-router-dom", async () => {
 });
 
 describe("Componente Header", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("debe renderizar el nombre de la empresa y los datos del usuario", () => {
-    // Simulamos un usuario administrador activo en sesión
     vi.mocked(useAuthStore).mockReturnValue({
       user: { email: "oscar@smartlogix.com", role: { name: "ADMIN" } },
       clearAuth: vi.fn(),
@@ -40,5 +47,24 @@ describe("Componente Header", () => {
     expect(brandText).toBeTruthy();
     expect(subBrandText).toBeTruthy();
     expect(userEmail).toBeTruthy();
+  });
+
+  it("debe llamar a clearAuth y navegar a /login al cerrar sesión", () => {
+    const mockClearAuth = vi.fn();
+    vi.mocked(useAuthStore).mockReturnValue({
+      user: { email: "oscar@smartlogix.com", role: { name: "ADMIN" } },
+      clearAuth: mockClearAuth,
+    });
+
+    render(
+      <BrowserRouter>
+        <Header />
+      </BrowserRouter>
+    );
+
+    fireEvent.click(screen.getByText(/Cerrar Sesión/i));
+
+    expect(mockClearAuth).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/login");
   });
 });

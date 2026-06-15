@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import Logo from '@/assets/icon.svg'
 
 function Header() {
   useAuthStore()

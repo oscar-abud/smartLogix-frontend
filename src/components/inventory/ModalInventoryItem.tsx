@@ -37,8 +37,8 @@ export const ModalInventoryItem: React.FC<ModalInventoryItemProps> = ({ isOpen, 
           setInventories(resInventories);
           setInventoryTypes(resTypes);
         } catch (error) {
-          console.error("Error al cargar listados del modal:", error);
-          toast.error("No se pudieron inicializar los formularios del catálogo.");
+          console.error("Error al cargar catálogos en modal:", error);
+          toast.error("No se pudieron cargar los almacenes o categorías.");
         } finally {
           setLoadingData(false);
         }
